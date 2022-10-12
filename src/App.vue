@@ -15,4 +15,14 @@ export default class App extends Vue {}
 </script>
 
 <style lang="scss">
+
+html {
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+
+  & * {
+    box-sizing: inherit;
+  }
+}
+
 </style>

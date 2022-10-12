@@ -3,13 +3,25 @@
     <thead>
     <tr>
       <th>Дата</th>
-      <th>Название</th>
-      <th>Количество</th>
-      <th>Расстояние (км)</th>
+      <th>
+        Название
+        <input type="checkbox" class="stateInput" name="stateInput1" id="stateInput1" @change="sortTable($event, 'name')">
+        <label for="stateInput1" class="arrows"></label>
+      </th>
+      <th>
+        Количество
+        <input type="checkbox" class="stateInput" name="stateInput2" id="stateInput2" @change="sortTable($event,'quantity')">
+        <label for="stateInput2" class="arrows"></label>
+      </th>
+      <th>
+        Расстояние (км)
+        <input type="checkbox" class="stateInput" name="stateInput3" id="stateInput3" @change="sortTable($event,'distance')">
+        <label for="stateInput3" class="arrows"></label>
+      </th>
     </tr>
     </thead>
     <tbody>
-      <tr v-for="item in this.paginatedData()" :key="item.name">
+      <tr v-for="item in this.currentData" :key="item.name">
         <td>{{ item.date.toLocaleString() }}</td>
         <td>{{ item.name }}</td>
         <td>{{ item.quantity }}</td>
@@ -36,14 +48,21 @@ import { Options, Vue } from 'vue-class-component';
 export default class NewEraTable extends Vue {
   pageNumber = 0
   tableSize = 6
+  currentData: Product[] = []
+
+  mounted () {
+    this.currentData = this.paginatedData()
+  }
 
   nextPage (): void {
     this.pageNumber++
+    this.currentData = this.paginatedData()
   }
 
   previousPage (): void {
     if (this.pageNumber > 0) {
       this.pageNumber--
+      this.currentData = this.paginatedData()
     }
   }
 
@@ -55,6 +74,43 @@ export default class NewEraTable extends Vue {
     const start = this.pageNumber * this.tableSize,
         end = start + this.tableSize;
     return this.mockProducts.slice(start, end);
+  }
+
+  sortTable($event: Event, field: string) {
+    const target = $event.currentTarget as HTMLInputElement
+
+    if (field === 'name' && target.checked) {
+      this.mockProducts.sort((a: Product, b: Product): number => {
+        return a.name.localeCompare(b.name)
+      })
+    }
+    else if (field === 'name' && !target.checked) {
+      this.mockProducts.sort((a: Product, b: Product): number => {
+        return b.name.localeCompare(a.name)
+      })
+    }
+    else if (field === 'quantity' && target.checked) {
+      this.mockProducts.sort((a: Product, b: Product): number => {
+        return (a.quantity > b.quantity) ? 1 : (a.quantity === b.quantity) ? 0 : -1
+      })
+    }
+    else if (field === 'quantity' && !target.checked) {
+      this.mockProducts.sort((a: Product, b: Product): number => {
+        return (a.quantity > b.quantity) ? -1 : (a.quantity === b.quantity) ? 0 : 1
+      })
+    }
+    else if (field === 'distance' && target.checked) {
+      this.mockProducts.sort((a: Product, b: Product): number => {
+        return (a.distance > b.distance) ? 1 : (a.distance === b.distance) ? 0 : -1
+      })
+    }
+    else if (field === 'distance' && !target.checked) {
+      this.mockProducts.sort((a: Product, b: Product): number => {
+        return (a.distance > b.distance) ? -1 : (a.distance === b.distance) ? 0 : 1
+      })
+    }
+
+    this.currentData = this.paginatedData()
   }
 
   mockProducts: Product[] = [
@@ -186,6 +242,9 @@ interface Product {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 
+//  Table
+
+
 .table {
   width: 100%;
   border: none;
@@ -221,5 +280,59 @@ interface Product {
 .table tbody tr td:last-child {
   border-radius: 0 8px 8px 0;
 }
+
+
+//  Sort arrows
+
+.arrows {
+  position: relative;
+  cursor: pointer;
+}
+
+.stateInput {
+  display: none;
+}
+
+.stateInput + .arrows:after {
+  content: ' ';
+  position: absolute;
+  left: 5px;
+  bottom: -13px;
+  border: 10px solid transparent;
+  border-top: 10px solid #20c6f7;
+  border-width: 9px 7px;
+}
+
+.stateInput:checked + .arrows:after {
+  content: ' ';
+  position: absolute;
+  left: 5px;
+  bottom: -13px;
+  border: 10px solid transparent;
+  border-top: 10px solid gray;
+  border-width: 9px 7px;
+}
+
+.stateInput + .arrows:before {
+  content: ' ';
+  position: absolute;
+  left: 5px;
+  bottom: 9px;
+  border: 10px solid transparent;
+  border-bottom: 10px solid gray;
+  border-width: 9px 7px;
+}
+
+.stateInput:checked + .arrows:before {
+  content: ' ';
+  position: absolute;
+  left: 5px;
+  bottom: 9px;
+  border: 10px solid transparent;
+  border-bottom: 10px solid #20c6f7;
+  border-width: 9px 7px;
+}
+
+
 
 </style>
