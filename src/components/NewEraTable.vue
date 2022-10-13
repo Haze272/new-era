@@ -201,7 +201,11 @@ export default class NewEraTable extends Vue {
   pageNumber = 0
   tableSize = 6
   currentData: Product[] = []
-  products: Product[] = this.mockProducts
+  products: Product[] = this.getProducts()
+
+  public getProducts() {
+    return this.mockProducts
+  }
 
   mounted () {
     this.currentData = this.paginatedData()
@@ -267,7 +271,7 @@ export default class NewEraTable extends Vue {
   }
 
   public filterTableByEquality($event: Event, field: string) {
-    this.products = this.mockProducts
+    this.products = this.getProducts()
     const target = $event.currentTarget as HTMLInputElement
     const value = target.value
 
@@ -292,7 +296,7 @@ export default class NewEraTable extends Vue {
   }
 
   public filterTableByContent($event: Event, field: string) {
-    this.products = this.mockProducts
+    this.products = this.getProducts()
     const target = $event.currentTarget as HTMLInputElement
     const value = target.value
 
@@ -305,7 +309,7 @@ export default class NewEraTable extends Vue {
   }
 
   public filterTableByMajority($event: Event, field: string) {
-    this.products = this.mockProducts
+    this.products = this.getProducts()
     const target = $event.currentTarget as HTMLInputElement
     const value = target.value
 
@@ -325,7 +329,7 @@ export default class NewEraTable extends Vue {
   }
 
   public filterTableByMinority($event: Event, field: string) {
-    this.products = this.mockProducts
+    this.products = this.getProducts()
     const target = $event.currentTarget as HTMLInputElement
     const value = target.value
 
@@ -345,7 +349,7 @@ export default class NewEraTable extends Vue {
   }
 
   public resetFilter() {
-    this.products = this.mockProducts
+    this.products = this.getProducts()
     this.currentData = this.paginatedData()
   }
 }
