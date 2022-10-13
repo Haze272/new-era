@@ -292,17 +292,12 @@ export default class NewEraTable extends Vue {
   }
 
   public filterTableByContent($event: Event, field: string) {
+    this.products = this.mockProducts
     const target = $event.currentTarget as HTMLInputElement
     const value = target.value
 
     if (field === 'name') {
-      //
-    }
-    else if (field === 'quantity') {
-      //
-    }
-    else if (field === 'distance') {
-      //
+      this.products = this.products.filter(item => item.name.match(value));
     }
 
     this.currentData = this.paginatedData()
@@ -310,16 +305,19 @@ export default class NewEraTable extends Vue {
   }
 
   public filterTableByMajority($event: Event, field: string) {
+    this.products = this.mockProducts
     const target = $event.currentTarget as HTMLInputElement
+    const value = target.value
 
-    if (field === 'name') {
-      //
-    }
-    else if (field === 'quantity') {
-      //
+    if (field === 'quantity') {
+      this.products = this.products.filter((item) => {
+        return item.quantity > Number(value)
+      })
     }
     else if (field === 'distance') {
-      //
+      this.products = this.products.filter((item) => {
+        return item.distance > Number(value)
+      })
     }
 
     this.currentData = this.paginatedData()
@@ -327,15 +325,23 @@ export default class NewEraTable extends Vue {
   }
 
   public filterTableByMinority($event: Event, field: string) {
-    if (field === 'name') {
-      //
-    }
-    else if (field === 'quantity') {
-      //
+    this.products = this.mockProducts
+    const target = $event.currentTarget as HTMLInputElement
+    const value = target.value
+
+    if (field === 'quantity') {
+      this.products = this.products.filter((item) => {
+        return item.quantity < Number(value)
+      })
     }
     else if (field === 'distance') {
-      //
+      this.products = this.products.filter((item) => {
+        return item.distance < Number(value)
+      })
     }
+
+    this.currentData = this.paginatedData()
+    target.value = ''
   }
 
   public resetFilter() {
