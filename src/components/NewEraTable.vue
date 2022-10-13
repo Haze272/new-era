@@ -1,4 +1,40 @@
 <template>
+  <nav>
+    <ul class="topmenu">
+      <li><a class="active">Фильтр</a>
+        <ul class="submenu">
+          <li>
+            <a class="submenu-link">По названию товара</a>
+            <ul class="submenu">
+              <li><a>Равно<input type="text" @change="this.filterTableByEquality($event, 'name')"></a></li>
+              <li><a>Содержит<input type="text" @change="this.filterTableByContent($event, 'name')"></a></li>
+            </ul>
+          </li>
+          <li>
+            <a class="submenu-link">По количеству</a>
+            <ul class="submenu">
+              <li><a>Равно<input type="number" @change="this.filterTableByEquality($event, 'quantity')"></a></li>
+              <li><a>Больше<input type="number" @change="this.filterTableByMajority($event, 'quantity')"></a></li>
+              <li><a>Меньше<input type="number" @change="this.filterTableByMinority($event, 'quantity')"></a></li>
+            </ul>
+          </li>
+          <li>
+            <a class="submenu-link">По расстоянию</a>
+            <ul class="submenu">
+              <li><a>Равно<input type="number" @change="this.filterTableByEquality($event, 'distance')"></a></li>
+              <li><a>Больше<input type="number" @change="this.filterTableByMajority($event, 'distance')"></a></li>
+              <li><a>Меньше<input type="number" @change="this.filterTableByMinority($event, 'distance')"></a></li>
+            </ul>
+          </li>
+          <li>
+            <a @click="this.resetFilter()">Сбросить фильтр</a>
+          </li>
+        </ul>
+      </li>
+      <li><a href="https://github.com/Haze272/new-era">Репозиторий</a></li>
+      <li><a href="https://vk.com/haze27">Автор</a></li>
+    </ul>
+  </nav>
   <table class="table">
     <thead>
     <tr>
@@ -46,73 +82,6 @@ import { Options, Vue } from 'vue-class-component';
   }
 })
 export default class NewEraTable extends Vue {
-  pageNumber = 0
-  tableSize = 6
-  currentData: Product[] = []
-
-  mounted () {
-    this.currentData = this.paginatedData()
-  }
-
-  nextPage (): void {
-    this.pageNumber++
-    this.currentData = this.paginatedData()
-  }
-
-  previousPage (): void {
-    if (this.pageNumber > 0) {
-      this.pageNumber--
-      this.currentData = this.paginatedData()
-    }
-  }
-
-  pageCount (): number{
-    return Math.floor(this.mockProducts.length / this.tableSize)
-  }
-
-  paginatedData(): Array<Product> {
-    const start = this.pageNumber * this.tableSize,
-        end = start + this.tableSize;
-    return this.mockProducts.slice(start, end);
-  }
-
-  sortTable($event: Event, field: string) {
-    const target = $event.currentTarget as HTMLInputElement
-
-    if (field === 'name' && target.checked) {
-      this.mockProducts.sort((a: Product, b: Product): number => {
-        return a.name.localeCompare(b.name)
-      })
-    }
-    else if (field === 'name' && !target.checked) {
-      this.mockProducts.sort((a: Product, b: Product): number => {
-        return b.name.localeCompare(a.name)
-      })
-    }
-    else if (field === 'quantity' && target.checked) {
-      this.mockProducts.sort((a: Product, b: Product): number => {
-        return (a.quantity > b.quantity) ? 1 : (a.quantity === b.quantity) ? 0 : -1
-      })
-    }
-    else if (field === 'quantity' && !target.checked) {
-      this.mockProducts.sort((a: Product, b: Product): number => {
-        return (a.quantity > b.quantity) ? -1 : (a.quantity === b.quantity) ? 0 : 1
-      })
-    }
-    else if (field === 'distance' && target.checked) {
-      this.mockProducts.sort((a: Product, b: Product): number => {
-        return (a.distance > b.distance) ? 1 : (a.distance === b.distance) ? 0 : -1
-      })
-    }
-    else if (field === 'distance' && !target.checked) {
-      this.mockProducts.sort((a: Product, b: Product): number => {
-        return (a.distance > b.distance) ? -1 : (a.distance === b.distance) ? 0 : 1
-      })
-    }
-
-    this.currentData = this.paginatedData()
-  }
-
   mockProducts: Product[] = [
     {
       "date": new Date(),
@@ -229,6 +198,150 @@ export default class NewEraTable extends Vue {
       "distance": 24
     },
   ]
+  pageNumber = 0
+  tableSize = 6
+  currentData: Product[] = []
+  products: Product[] = this.mockProducts
+
+  mounted () {
+    this.currentData = this.paginatedData()
+  }
+
+  nextPage (): void {
+    this.pageNumber++
+    this.currentData = this.paginatedData()
+  }
+
+  previousPage (): void {
+    if (this.pageNumber > 0) {
+      this.pageNumber--
+      this.currentData = this.paginatedData()
+    }
+  }
+
+  pageCount (): number{
+    return Math.floor(this.products.length / this.tableSize)
+  }
+
+  paginatedData(): Array<Product> {
+    const start = this.pageNumber * this.tableSize,
+        end = start + this.tableSize;
+    return this.products.slice(start, end);
+  }
+
+  sortTable($event: Event, field: string) {
+    const target = $event.currentTarget as HTMLInputElement
+
+    if (field === 'name' && target.checked) {
+      this.products.sort((a: Product, b: Product): number => {
+        return a.name.localeCompare(b.name)
+      })
+    }
+    else if (field === 'name' && !target.checked) {
+      this.products.sort((a: Product, b: Product): number => {
+        return b.name.localeCompare(a.name)
+      })
+    }
+    else if (field === 'quantity' && target.checked) {
+      this.products.sort((a: Product, b: Product): number => {
+        return (a.quantity > b.quantity) ? 1 : (a.quantity === b.quantity) ? 0 : -1
+      })
+    }
+    else if (field === 'quantity' && !target.checked) {
+      this.products.sort((a: Product, b: Product): number => {
+        return (a.quantity > b.quantity) ? -1 : (a.quantity === b.quantity) ? 0 : 1
+      })
+    }
+    else if (field === 'distance' && target.checked) {
+      this.products.sort((a: Product, b: Product): number => {
+        return (a.distance > b.distance) ? 1 : (a.distance === b.distance) ? 0 : -1
+      })
+    }
+    else if (field === 'distance' && !target.checked) {
+      this.products.sort((a: Product, b: Product): number => {
+        return (a.distance > b.distance) ? -1 : (a.distance === b.distance) ? 0 : 1
+      })
+    }
+
+    this.currentData = this.paginatedData()
+  }
+
+  public filterTableByEquality($event: Event, field: string) {
+    this.products = this.mockProducts
+    const target = $event.currentTarget as HTMLInputElement
+    const value = target.value
+
+    if (field === 'name') {
+      this.products = this.products.filter((item) => {
+        return item.name == value
+      })
+    }
+    else if (field === 'quantity') {
+      this.products = this.products.filter((item) => {
+        return item.quantity == Number(value)
+      })
+    }
+    else if (field === 'distance') {
+      this.products = this.products.filter((item) => {
+        return item.distance == Number(value)
+      })
+    }
+
+    this.currentData = this.paginatedData()
+    target.value = ''
+  }
+
+  public filterTableByContent($event: Event, field: string) {
+    const target = $event.currentTarget as HTMLInputElement
+    const value = target.value
+
+    if (field === 'name') {
+      //
+    }
+    else if (field === 'quantity') {
+      //
+    }
+    else if (field === 'distance') {
+      //
+    }
+
+    this.currentData = this.paginatedData()
+    target.value = ''
+  }
+
+  public filterTableByMajority($event: Event, field: string) {
+    const target = $event.currentTarget as HTMLInputElement
+
+    if (field === 'name') {
+      //
+    }
+    else if (field === 'quantity') {
+      //
+    }
+    else if (field === 'distance') {
+      //
+    }
+
+    this.currentData = this.paginatedData()
+    target.value = ''
+  }
+
+  public filterTableByMinority($event: Event, field: string) {
+    if (field === 'name') {
+      //
+    }
+    else if (field === 'quantity') {
+      //
+    }
+    else if (field === 'distance') {
+      //
+    }
+  }
+
+  public resetFilter() {
+    this.products = this.mockProducts
+    this.currentData = this.paginatedData()
+  }
 }
 
 interface Product {
@@ -241,6 +354,106 @@ interface Product {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+
+// Navigation
+
+
+nav {
+  background-color: white;
+  box-shadow: 0 2px 0 0 #ECF1F2;
+  border-top: 1px solid #ECF1F2;
+  text-align: center;
+
+  & a {
+    text-decoration: none;
+    display: block;
+    transition: .3s linear;
+  }
+
+  & ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.topmenu {
+  & > li {
+    display: inline-block;
+    position: relative;
+    margin-right: -4px;
+    border-left: 1px solid #ECF1F2;
+
+    &:last-child {
+      border-right: 1px solid #ECF1F2;
+    }
+
+    & > a {
+      font-weight: bold;
+      padding: 20px 30px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #1c1c1c;
+    }
+  }
+}
+
+.active:after, .submenu-link:after {
+  content: "\f107";
+  font-family: "FontAwesome";
+  color: inherit;
+  margin-left: 10px;
+}
+
+.topmenu .active,
+.topmenu > li > a:hover,
+.submenu li a:hover {
+  color: #ddbe86;
+  cursor: pointer;
+}
+
+.submenu {
+  position: absolute;
+  left: -1px;
+  z-index: 5;
+  width: 240px;
+  border-bottom: 1px solid #ECF1F2;
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: .3s ease-in-out;
+
+  & li {
+    position: relative;
+  }
+
+  & a {
+    background: white;
+    border-top: 1px solid #ECF1F2;
+    border-right: 1px solid #ECF1F2;
+    border-left: 1px solid #ECF1F2;
+    color: #1c1c1c;
+    text-align: left;
+    font-size: 14px;
+    letter-spacing: 1px;
+    padding: 10px 20px;
+  }
+
+  & .submenu {
+    position: absolute;
+    top: 0;
+    left: calc(100% - 1px);
+    left: -webkit-calc(100% - 1px);
+  }
+}
+
+nav li:hover > .submenu {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0px);
+}
+
 
 //  Table
 
@@ -299,7 +512,7 @@ interface Product {
   left: 5px;
   bottom: -13px;
   border: 10px solid transparent;
-  border-top: 10px solid #20c6f7;
+  border-top: 10px solid #ddbe86;
   border-width: 9px 7px;
 }
 
@@ -329,7 +542,7 @@ interface Product {
   left: 5px;
   bottom: 9px;
   border: 10px solid transparent;
-  border-bottom: 10px solid #20c6f7;
+  border-bottom: 10px solid #ddbe86;
   border-width: 9px 7px;
 }
 
