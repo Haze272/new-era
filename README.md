@@ -17,7 +17,7 @@ node index
 
 ## Руководство по пользованию
 ### Интерфейс
-![Интерфейс приложения](https://github.com/Haze272/new-era/blob/master/screenshots/application.jpg)
+![Интерфейс приложения](https://github.com/Haze272/new-era/blob/master/app/screenshots/application.jpg)
 Приложение содержит меню навигации, таблицу и пагинацию страницы. В навигации есть фильтрация таблицы, ссылка на этот репозиторий на GitHub и ссылка на автора.
 
 ### Функционал приложения
