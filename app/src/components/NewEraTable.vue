@@ -87,6 +87,7 @@ export default class NewEraTable extends Vue {
   tableSize = 6
   currentData: Product[] = []
   products: Product[] = []
+  productsGotFromServer: Product[] = []
 
   private axios = Axios.create();
 
@@ -96,12 +97,13 @@ export default class NewEraTable extends Vue {
     let response = await this.axios.get<Product[]>(url)
         .then(response => {
           this.products = response.data as Product[]
+          this.productsGotFromServer = response.data as Product[]
         })
     this.currentData = this.paginatedData()
   }
 
   getProducts(): Product[] {
-    return this.products
+    return this.productsGotFromServer
   }
 
   mounted () {
@@ -247,8 +249,7 @@ export default class NewEraTable extends Vue {
   }
 
   public resetFilter() {
-    this.products = this.getProducts()
-    this.currentData = this.paginatedData()
+    this.fetchProducts()
   }
 }
 
